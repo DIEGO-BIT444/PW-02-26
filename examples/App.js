@@ -1,23 +1,42 @@
-/*let celsius = Number(console.log("Ingrese la temperatura en Celsius:"));
+const express = require("express");
 
-let fahrenheit = (celsius * 9 / 5) + 32;
+const app = express();
+const PORT = 3000;
 
-console.log("Temperatura en Celsius: " + celsius);
-console.log("Temperatura en Fahrenheit: " + fahrenheit);*/
-const readline = require("readline");
+app.get("/api/funcion/:parametroURL", (req, res) => {
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
+    const salario = parseFloat(req.params.parametroURL);
+
+    // Validación 1: No es numérico
+    if (isNaN(salario)) {
+        return res.status(400).json({
+            error: "El salario debe ser numérico"
+        });
+    }
+
+    // Validación 2: Es igual a 0
+    if (salario == 0  ||   salario < 0) {
+        return res.status(400).json({
+            error: "El salario debe ser un numero mayor a cero"
+        });
+    }
+
+    
+
+    // Cálculo del IVA (13%)
+    const iva = salario * 0.13;
+
+    // Cálculo de Renta (10%)
+    const renta = salario * 0.10;
+
+    // Respuesta
+    res.json({
+        monto: salario,
+        iva: iva,
+        renta: renta
+    });
 });
 
-rl.question("Ingrese la temperatura en Celsius: ", (entrada) => {
-    let celsius = Number(entrada);
-
-    let fahrenheit = (celsius * 9 / 5) + 32;
-
-    console.log("Temperatura en Celsius: " + celsius);
-    console.log("Temperatura en Fahrenheit: " + fahrenheit);
-
-    rl.close();
+app.listen(PORT, () => {
+    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
 });
